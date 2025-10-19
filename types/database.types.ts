@@ -12,25 +12,31 @@ export interface Database {
       profiles: {
         Row: {
           id: string;
+          username: string | null;
+          display_name: string | null;
           lc: string;
           role: 'user' | 'admin';
-          vote_balance: number;
+          votes_remaining: number;
           can_vote: boolean;
           created_at: string;
         };
         Insert: {
           id: string;
+          username?: string | null;
+          display_name?: string | null;
           lc: string;
           role?: 'user' | 'admin';
-          vote_balance?: number;
+          votes_remaining?: number;
           can_vote?: boolean;
           created_at?: string;
         };
         Update: {
           id?: string;
+          username?: string | null;
+          display_name?: string | null;
           lc?: string;
           role?: 'user' | 'admin';
-          vote_balance?: number;
+          votes_remaining?: number;
           can_vote?: boolean;
           created_at?: string;
         };
@@ -74,29 +80,29 @@ export interface Database {
       admin_actions: {
         Row: {
           id: string;
-          actor_id: string;
-          action_type: string;
+          admin_id: string;
+          action_type: 'transfer' | 'setVotes' | 'toggleVote';
           details: Json;
           created_at: string;
         };
         Insert: {
           id?: string;
-          actor_id: string;
-          action_type: string;
+          admin_id: string;
+          action_type: 'transfer' | 'setVotes' | 'toggleVote';
           details: Json;
           created_at?: string;
         };
         Update: {
           id?: string;
-          actor_id?: string;
-          action_type?: string;
+          admin_id?: string;
+          action_type?: 'transfer' | 'setVotes' | 'toggleVote';
           details?: Json;
           created_at?: string;
         };
         Relationships: [
           {
-            foreignKeyName: 'admin_actions_actor_id_fkey';
-            columns: ['actor_id'];
+            foreignKeyName: 'admin_actions_admin_id_fkey';
+            columns: ['admin_id'];
             referencedRelation: 'profiles';
             referencedColumns: ['id'];
           }

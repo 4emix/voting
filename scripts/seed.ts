@@ -92,9 +92,11 @@ async function main() {
     const { error: updateError } = await supabase
       .from('profiles')
       .update({
+        username: seed.email,
+        display_name: seed.email.split('@')[0],
         lc: seed.lc,
         role: seed.role,
-        vote_balance: seed.votes,
+        votes_remaining: seed.votes,
         can_vote: true
       })
       .eq('id', user.id);
