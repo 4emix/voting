@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from '@/types/supabase';
+import type { Database } from '@/types/database.types';
 import { SUPABASE_SERVICE_ROLE_KEY, SUPABASE_URL } from './config';
 
 let serviceClient: ReturnType<typeof createClient<Database>> | null = null;

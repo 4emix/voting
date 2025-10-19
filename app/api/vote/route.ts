@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import type { Database } from '@/types/supabase';
+import type { Database } from '@/types/database.types';
 import { NONE_CHOICE, VOTE_CHOICES, type VoteChoice } from '@/lib/constants';
 
 const voteSchema = z
