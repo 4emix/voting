@@ -21,19 +21,30 @@ export function LoginForm() {
     setLoading(true);
     setError(null);
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
+    let shouldResetLoading = true;
 
-    if (signInError) {
-      setError(signInError.message);
-      setLoading(false);
-      return;
+    try {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (signInError) {
+        setError(signInError.message);
+        return;
+      }
+
+      shouldResetLoading = false;
+      router.push(redirectedFrom || '/vote');
+      router.refresh();
+    } catch (submitError) {
+      setError('Unexpected error signing in. Please try again.');
+      console.error('Failed to sign in', submitError);
+    } finally {
+      if (shouldResetLoading) {
+        setLoading(false);
+      }
     }
-
-    router.push(redirectedFrom || '/vote');
-    router.refresh();
   }
 
   return (
