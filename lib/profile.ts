@@ -18,11 +18,13 @@ export async function requireUser() {
     redirect('/login');
   }
 
-  const { data: profile, error } = await supabase
+  const { data: profileData, error } = await supabase
     .from('profiles_with_email')
     .select('*')
     .eq('id', session.user.id)
     .single();
+
+  const profile = profileData as Profile | null;
 
   if (error || !profile) {
     throw new Error('Unable to load profile for authenticated user.');

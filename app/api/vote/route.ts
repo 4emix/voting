@@ -39,15 +39,22 @@ export async function POST(request: Request) {
 
   const choices = result.data.choices as VoteChoice[];
 
-  const { data, error } = await supabase.rpc('cast_vote', {
-    choices
-  });
+  const payload: Database['public']['Functions']['cast_vote']['Args'] = {
+    choices: choices as Database['public']['Functions']['cast_vote']['Args']['choices']
+  };
+
+  // Supabase's typed client currently infers RPC args as `never` for this generated type.
+  const { data, error } = await supabase.rpc('cast_vote', payload as never);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 
-  const remaining = Array.isArray(data) ? data[0]?.remaining ?? 0 : (data as { remaining: number } | null)?.remaining ?? 0;
+  const typedData = data as Database['public']['Functions']['cast_vote']['Returns'] | null;
+
+  const remaining = Array.isArray(typedData)
+    ? typedData[0]?.remaining ?? 0
+    : (typedData as { remaining: number } | null)?.remaining ?? 0;
 
   return NextResponse.json({ remaining, choices });
 }

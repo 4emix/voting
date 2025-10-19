@@ -132,7 +132,7 @@ export interface Database {
     };
     Functions: {
       cast_vote: {
-        Args: { choices: string[] };
+        Args: { choices: string[]; [key: string]: unknown };
         Returns: { remaining: number }[];
       };
       admin_transfer_votes: {

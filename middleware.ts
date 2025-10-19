@@ -18,11 +18,13 @@ export async function middleware(req: NextRequest) {
   }
 
   if (req.nextUrl.pathname.startsWith('/admin')) {
-    const { data: profile } = await supabase
+    const { data: profileData } = await supabase
       .from('profiles')
       .select('role')
       .eq('id', session.user.id)
       .single();
+
+    const profile = profileData as Pick<Database['public']['Tables']['profiles']['Row'], 'role'> | null;
 
     if (!profile || profile.role !== 'admin') {
       return NextResponse.redirect(new URL('/vote', req.url));

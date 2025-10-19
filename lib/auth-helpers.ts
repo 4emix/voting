@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import type { Database } from '@/types/database.types';
+import type { Database, Profile } from '@/types/database.types';
 
 export async function assertAdminRoute() {
   const cookieStore = cookies();
@@ -14,11 +14,13 @@ export async function assertAdminRoute() {
     return { supabase, session: null, profile: null } as const;
   }
 
-  const { data: profile } = await supabase
+  const { data: profileData } = await supabase
     .from('profiles_with_email')
     .select('*')
     .eq('id', session.user.id)
     .single();
+
+  const profile = profileData as Profile | null;
 
   if (!profile || profile.role !== 'admin') {
     return { supabase, session, profile: null } as const;
