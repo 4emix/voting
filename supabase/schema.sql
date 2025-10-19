@@ -107,12 +107,38 @@ create policy votes_select_admin on public.votes
     select 1 from public.profiles as p where p.id = auth.uid() and p.role = 'admin'
   ));
 
--- Admin action policies
 create policy admin_actions_select_admin on public.admin_actions
   for select
   using (exists (
     select 1 from public.profiles as p where p.id = auth.uid() and p.role = 'admin'
   ));
+
+-- Helper views
+create or replace view public.profiles_with_email as
+select
+  p.id,
+  p.role,
+  p.lc,
+  p.votes_remaining as vote_balance,
+  p.can_vote,
+  u.email
+from public.profiles as p
+left join auth.users as u on u.id = p.id;
+
+create or replace view public.votes_with_users as
+select
+  v.id,
+  v.user_id,
+  v.choices,
+  v.created_at,
+  p.lc,
+  u.email,
+  p.role,
+  p.votes_remaining as vote_balance,
+  p.can_vote
+from public.votes as v
+join public.profiles as p on p.id = v.user_id
+left join auth.users as u on u.id = v.user_id;
 
 -- Voting RPC
 create or replace function public.cast_vote(choices text[])

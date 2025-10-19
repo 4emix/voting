@@ -7,6 +7,9 @@ drop function if exists public.cast_vote(text[]);
 drop trigger if exists on_auth_user_created on auth.users;
 drop function if exists public.handle_new_user();
 
+drop view if exists public.votes_with_users;
+drop view if exists public.profiles_with_email;
+
 drop table if exists public.admin_actions cascade;
 drop table if exists public.votes cascade;
 drop table if exists public.profiles cascade;
