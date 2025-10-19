@@ -2,7 +2,7 @@
 
 import { useMemo, useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import type { Profile } from '@/types/supabase';
+import type { Profile } from '@/types/database.types';
 
 interface VoteLogEntry {
   id: string;

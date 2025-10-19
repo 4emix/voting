@@ -1,7 +1,7 @@
 import { AdminDashboard } from '@/components/admin-dashboard';
 import { requireAdmin } from '@/lib/profile';
 import { getServiceSupabaseClient } from '@/lib/supabase/service-client';
-import type { VoteWithUser } from '@/types/supabase';
+import type { VoteWithUser } from '@/types/database.types';
 
 export default async function AdminPage() {
   await requireAdmin();

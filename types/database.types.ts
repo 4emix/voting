@@ -136,15 +136,20 @@ export interface Database {
         Returns: { remaining: number }[];
       };
       admin_transfer_votes: {
-        Args: { from_user: string; to_user: string; amount: number; actor_id: string };
-        Returns: { from_balance: number; to_balance: number }[];
+        Args: {
+          from_user: string;
+          to_user: string;
+          amount: number;
+          actor_id?: string;
+        };
+        Returns: { from_remaining: number; to_remaining: number }[];
       };
       admin_set_votes: {
-        Args: { user_id: string; new_amount: number; actor_id: string };
-        Returns: { vote_balance: number }[];
+        Args: { user_id: string; new_amount: number; actor_id?: string };
+        Returns: { votes_remaining: number }[];
       };
       admin_toggle_vote_permission: {
-        Args: { user_id: string; can_vote: boolean; actor_id: string };
+        Args: { user_id: string; can_vote: boolean; actor_id?: string };
         Returns: { can_vote: boolean }[];
       };
     };

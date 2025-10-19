@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import type { Session } from '@supabase/supabase-js';
 import { createServerSupabaseClient } from '@/lib/supabase/server-client';
-import type { Profile } from '@/types/supabase';
+import type { Profile } from '@/types/database.types';
 
 export interface AuthContext {
   session: Session;
