@@ -15,7 +15,7 @@ export async function GET() {
 
   const supabase = getServiceSupabaseClient();
   const { data, error } = await supabase
-    .from('profiles')
+    .from('profiles_with_email')
     .select('*')
     .order('lc', { ascending: true });
 

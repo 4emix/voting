@@ -10,8 +10,7 @@ interface VoteLogEntry {
   choices: unknown;
   user_id: string;
   lc: string;
-  display_name: string | null;
-  username: string | null;
+  email: string | null;
 }
 
 interface AdminDashboardProps {
@@ -31,7 +30,7 @@ export function AdminDashboard({ users, votes }: AdminDashboardProps) {
 
   const [setVotesState, setSetVotesState] = useState({
     userId: '',
-    amount: 0
+    voteBalance: 0
   });
   const [setVotesMessage, setSetVotesMessage] = useState<string | null>(null);
   const [setVotesError, setSetVotesError] = useState<string | null>(null);
@@ -89,7 +88,7 @@ export function AdminDashboard({ users, votes }: AdminDashboardProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId: setVotesState.userId,
-          votesRemaining: setVotesState.amount
+          voteBalance: setVotesState.voteBalance
         })
       });
 
@@ -98,7 +97,7 @@ export function AdminDashboard({ users, votes }: AdminDashboardProps) {
         throw new Error(payload.error ?? 'Unable to update votes.');
       }
 
-      setSetVotesMessage('Votes updated successfully.');
+      setSetVotesMessage('Vote balance updated successfully.');
       router.refresh();
     } catch (error) {
       setSetVotesError(error instanceof Error ? error.message : 'Unable to update votes.');
@@ -155,7 +154,7 @@ export function AdminDashboard({ users, votes }: AdminDashboardProps) {
               </option>
               {users.map((user) => (
                 <option key={user.id} value={user.id}>
-                  {user.display_name ?? user.username ?? user.id} ({user.lc})
+                  {`${user.email ?? user.id}`} ({user.lc})
                 </option>
               ))}
             </select>
@@ -173,7 +172,7 @@ export function AdminDashboard({ users, votes }: AdminDashboardProps) {
               </option>
               {users.map((user) => (
                 <option key={user.id} value={user.id}>
-                  {user.display_name ?? user.username ?? user.id} ({user.lc})
+                  {`${user.email ?? user.id}`} ({user.lc})
                 </option>
               ))}
             </select>
@@ -205,7 +204,7 @@ export function AdminDashboard({ users, votes }: AdminDashboardProps) {
 
         <form onSubmit={handleSetVotes} className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <div>
-            <h2 className="text-lg font-semibold text-slate-900">Set votes remaining</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Set vote balance</h2>
             <p className="text-sm text-slate-600">Override a user&apos;s vote balance.</p>
           </div>
           <label className="block text-sm font-medium text-slate-700">
@@ -221,19 +220,19 @@ export function AdminDashboard({ users, votes }: AdminDashboardProps) {
               </option>
               {users.map((user) => (
                 <option key={user.id} value={user.id}>
-                  {user.display_name ?? user.username ?? user.id} ({user.lc})
+                  {`${user.email ?? user.id}`} ({user.lc})
                 </option>
               ))}
             </select>
           </label>
           <label className="block text-sm font-medium text-slate-700">
-            Votes remaining
+            Vote balance
             <input
               type="number"
               min={0}
               required
-              value={setVotesState.amount}
-              onChange={(event) => setSetVotesState((prev) => ({ ...prev, amount: Number(event.target.value) }))}
+              value={setVotesState.voteBalance}
+              onChange={(event) => setSetVotesState((prev) => ({ ...prev, voteBalance: Number(event.target.value) }))}
               className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
             />
           </label>
@@ -258,10 +257,9 @@ export function AdminDashboard({ users, votes }: AdminDashboardProps) {
           <table className="min-w-full divide-y divide-slate-200 text-sm">
             <thead className="bg-slate-50">
               <tr>
-                <th className="px-3 py-2 text-left font-medium text-slate-600">Display name</th>
-                <th className="px-3 py-2 text-left font-medium text-slate-600">Username</th>
+                <th className="px-3 py-2 text-left font-medium text-slate-600">Email</th>
                 <th className="px-3 py-2 text-left font-medium text-slate-600">LC</th>
-                <th className="px-3 py-2 text-left font-medium text-slate-600">Votes remaining</th>
+                <th className="px-3 py-2 text-left font-medium text-slate-600">Vote balance</th>
                 <th className="px-3 py-2 text-left font-medium text-slate-600">Can vote</th>
                 <th className="px-3 py-2 text-left font-medium text-slate-600">Role</th>
                 <th className="px-3 py-2 text-left font-medium text-slate-600">Actions</th>
@@ -270,10 +268,9 @@ export function AdminDashboard({ users, votes }: AdminDashboardProps) {
             <tbody className="divide-y divide-slate-200">
               {users.map((user) => (
                 <tr key={user.id}>
-                  <td className="px-3 py-2">{user.display_name ?? '—'}</td>
-                  <td className="px-3 py-2">{user.username ?? '—'}</td>
+                  <td className="px-3 py-2">{user.email ?? '—'}</td>
                   <td className="px-3 py-2">{user.lc}</td>
-                  <td className="px-3 py-2">{user.votes_remaining}</td>
+                  <td className="px-3 py-2">{user.vote_balance}</td>
                   <td className="px-3 py-2">
                     <span className={`rounded-full px-2 py-1 text-xs font-semibold ${
                       user.can_vote
@@ -328,7 +325,7 @@ export function AdminDashboard({ users, votes }: AdminDashboardProps) {
               <option value="all">All users</option>
               {users.map((user) => (
                 <option key={user.id} value={user.id}>
-                  {user.display_name ?? user.username ?? user.id}
+                  {user.email ?? user.id}
                 </option>
               ))}
             </select>
@@ -358,7 +355,7 @@ export function AdminDashboard({ users, votes }: AdminDashboardProps) {
                     <td className="px-3 py-2 text-slate-600">
                       {new Date(vote.created_at).toLocaleString()}
                     </td>
-                    <td className="px-3 py-2">{vote.display_name ?? vote.username ?? vote.user_id}</td>
+                    <td className="px-3 py-2">{vote.email ?? vote.user_id}</td>
                     <td className="px-3 py-2">{vote.lc}</td>
                     <td className="px-3 py-2">{choices.join(', ')}</td>
                   </tr>

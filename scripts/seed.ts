@@ -5,7 +5,6 @@ import type { Database } from '@/types/supabase';
 interface SeedUser {
   email: string;
   password: string;
-  displayName: string;
   lc: string;
   role: 'user' | 'admin';
   votes: number;
@@ -15,7 +14,6 @@ const users: SeedUser[] = [
   {
     email: 'admin@example.com',
     password: 'AdminPass123',
-    displayName: 'Admin User',
     lc: 'LC HQ',
     role: 'admin',
     votes: 10
@@ -23,7 +21,6 @@ const users: SeedUser[] = [
   {
     email: 'user1@demo.com',
     password: 'Password1',
-    displayName: 'LC Hacettepe Voter',
     lc: 'LC Hacettepe',
     role: 'user',
     votes: 3
@@ -31,7 +28,6 @@ const users: SeedUser[] = [
   {
     email: 'user2@demo.com',
     password: 'Password2',
-    displayName: 'LC Cairo Voter',
     lc: 'LC Cairo',
     role: 'user',
     votes: 2
@@ -39,7 +35,6 @@ const users: SeedUser[] = [
   {
     email: 'user3@demo.com',
     password: 'Password3',
-    displayName: 'LC Lisbon Voter',
     lc: 'LC Lisbon',
     role: 'user',
     votes: 1
@@ -97,12 +92,10 @@ async function main() {
     const { error: updateError } = await supabase
       .from('profiles')
       .update({
-        display_name: seed.displayName,
         lc: seed.lc,
         role: seed.role,
-        votes_remaining: seed.votes,
-        can_vote: true,
-        username: seed.email
+        vote_balance: seed.votes,
+        can_vote: true
       })
       .eq('id', user.id);
 

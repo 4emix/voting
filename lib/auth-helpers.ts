@@ -15,7 +15,7 @@ export async function assertAdminRoute() {
   }
 
   const { data: profile } = await supabase
-    .from('profiles')
+    .from('profiles_with_email')
     .select('*')
     .eq('id', session.user.id)
     .single();

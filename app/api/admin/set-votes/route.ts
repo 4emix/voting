@@ -5,7 +5,7 @@ import { getServiceSupabaseClient } from '@/lib/supabase/service-client';
 
 const schema = z.object({
   userId: z.string().uuid(),
-  votesRemaining: z.number().int().min(0)
+  voteBalance: z.number().int().min(0)
 });
 
 export async function POST(request: Request) {
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
   const supabase = getServiceSupabaseClient();
   const { data, error } = await supabase.rpc('admin_set_votes', {
     user_id: validation.data.userId,
-    new_amount: validation.data.votesRemaining,
+    new_amount: validation.data.voteBalance,
     actor_id: session.user.id
   });
 

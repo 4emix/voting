@@ -12,31 +12,25 @@ export interface Database {
       profiles: {
         Row: {
           id: string;
-          username: string | null;
-          display_name: string | null;
           lc: string;
           role: 'user' | 'admin';
-          votes_remaining: number;
+          vote_balance: number;
           can_vote: boolean;
           created_at: string;
         };
         Insert: {
           id: string;
-          username?: string | null;
-          display_name?: string | null;
           lc: string;
           role?: 'user' | 'admin';
-          votes_remaining?: number;
+          vote_balance?: number;
           can_vote?: boolean;
           created_at?: string;
         };
         Update: {
           id?: string;
-          username?: string | null;
-          display_name?: string | null;
           lc?: string;
           role?: 'user' | 'admin';
-          votes_remaining?: number;
+          vote_balance?: number;
           can_vote?: boolean;
           created_at?: string;
         };
@@ -80,33 +74,60 @@ export interface Database {
       admin_actions: {
         Row: {
           id: string;
-          admin_id: string;
+          actor_id: string;
           action_type: string;
           details: Json;
           created_at: string;
         };
         Insert: {
           id?: string;
-          admin_id: string;
+          actor_id: string;
           action_type: string;
           details: Json;
           created_at?: string;
         };
         Update: {
           id?: string;
-          admin_id?: string;
+          actor_id?: string;
           action_type?: string;
           details?: Json;
           created_at?: string;
         };
         Relationships: [
           {
-            foreignKeyName: 'admin_actions_admin_id_fkey';
-            columns: ['admin_id'];
+            foreignKeyName: 'admin_actions_actor_id_fkey';
+            columns: ['actor_id'];
             referencedRelation: 'profiles';
             referencedColumns: ['id'];
           }
         ];
+      };
+    };
+    Views: {
+      profiles_with_email: {
+        Row: {
+          id: string;
+          role: 'user' | 'admin';
+          lc: string;
+          vote_balance: number;
+          can_vote: boolean;
+          email: string | null;
+        };
+        Relationships: [];
+      };
+      votes_with_users: {
+        Row: {
+          id: string;
+          user_id: string;
+          choices: Json;
+          created_at: string;
+          lc: string;
+          email: string | null;
+          role: 'user' | 'admin';
+          vote_balance: number;
+          can_vote: boolean;
+        };
+        Relationships: [];
       };
     };
     Functions: {
@@ -115,20 +136,21 @@ export interface Database {
         Returns: { remaining: number }[];
       };
       admin_transfer_votes: {
-        Args: { from_user: string; to_user: string; amount: number; actor_id?: string };
-        Returns: { from_remaining: number; to_remaining: number }[];
+        Args: { from_user: string; to_user: string; amount: number; actor_id: string };
+        Returns: { from_balance: number; to_balance: number }[];
       };
       admin_set_votes: {
-        Args: { user_id: string; new_amount: number; actor_id?: string };
-        Returns: { votes_remaining: number }[];
+        Args: { user_id: string; new_amount: number; actor_id: string };
+        Returns: { vote_balance: number }[];
       };
       admin_toggle_vote_permission: {
-        Args: { user_id: string; can_vote: boolean; actor_id?: string };
+        Args: { user_id: string; can_vote: boolean; actor_id: string };
         Returns: { can_vote: boolean }[];
       };
     };
   };
 }
 
-export type Profile = Database['public']['Tables']['profiles']['Row'];
+export type Profile = Database['public']['Views']['profiles_with_email']['Row'];
 export type VoteRow = Database['public']['Tables']['votes']['Row'];
+export type VoteWithUser = Database['public']['Views']['votes_with_users']['Row'];

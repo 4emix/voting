@@ -15,8 +15,8 @@ export async function GET() {
 
   const supabase = getServiceSupabaseClient();
   const { data, error } = await supabase
-    .from('votes')
-    .select('id, choices, created_at, user_id, profiles(display_name, username, lc, id)')
+    .from('votes_with_users')
+    .select('*')
     .order('created_at', { ascending: false })
     .limit(200);
 
