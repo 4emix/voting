@@ -1,14 +1,14 @@
 import { AdminDashboard } from '@/components/admin-dashboard';
 import { requireAdmin } from '@/lib/profile';
 import { getServiceSupabaseClient } from '@/lib/supabase/service-client';
-import type { Profile, VoteRow } from '@/types/supabase';
+import type { VoteWithUser } from '@/types/supabase';
 
 export default async function AdminPage() {
   await requireAdmin();
   const supabase = getServiceSupabaseClient();
 
   const { data: users, error: usersError } = await supabase
-    .from('profiles')
+    .from('profiles_with_email')
     .select('*')
     .order('lc', { ascending: true });
 
@@ -17,8 +17,8 @@ export default async function AdminPage() {
   }
 
   const { data: votes, error: votesError } = await supabase
-    .from('votes')
-    .select('id, choices, created_at, user_id, profiles(display_name, username, lc, id)')
+    .from('votes_with_users')
+    .select('*')
     .order('created_at', { ascending: false })
     .limit(100);
 
@@ -26,18 +26,13 @@ export default async function AdminPage() {
     throw new Error(`Unable to load votes: ${votesError?.message ?? 'unknown error'}`);
   }
 
-  type VoteWithProfile = VoteRow & {
-    profiles: Pick<Profile, 'display_name' | 'username' | 'lc' | 'id'> | null;
-  };
-
-  const logs = (votes as VoteWithProfile[]).map((vote) => ({
+  const logs = (votes as VoteWithUser[]).map((vote) => ({
     id: vote.id,
     created_at: vote.created_at,
     choices: vote.choices,
     user_id: vote.user_id,
-    lc: vote.profiles?.lc ?? 'Unknown',
-    display_name: vote.profiles?.display_name ?? null,
-    username: vote.profiles?.username ?? null
+    lc: vote.lc,
+    email: vote.email
   }));
 
   return <AdminDashboard users={users} votes={logs} />;
