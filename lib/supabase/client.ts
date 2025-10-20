@@ -5,13 +5,15 @@ import { SUPABASE_ANON_KEY, SUPABASE_URL } from './config';
 
 let browserClient: SupabaseClient<Database> | null = null;
 
-export function createBrowserSupabaseClient() {
-  if (!browserClient) {
-    browserClient = createClientComponentClient<Database>({
+export function createBrowserSupabaseClient(): SupabaseClient<Database> {
+  const client =
+    browserClient ??
+    createClientComponentClient<Database>({
       supabaseUrl: SUPABASE_URL,
       supabaseKey: SUPABASE_ANON_KEY
     });
-  }
 
-  return browserClient;
+  browserClient = client;
+
+  return client;
 }
