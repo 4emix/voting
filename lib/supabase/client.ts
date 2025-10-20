@@ -1,5 +1,7 @@
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import type { SupabaseClient } from '@supabase/supabase-js';
+import {
+  createClientComponentClient,
+  type SupabaseClient
+} from '@supabase/auth-helpers-nextjs';
 import type { Database } from '@/types/database.types';
 import { SUPABASE_ANON_KEY, SUPABASE_URL } from './config';
 
